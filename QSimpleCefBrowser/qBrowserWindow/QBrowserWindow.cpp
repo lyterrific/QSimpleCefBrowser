@@ -101,7 +101,6 @@ void QBrowserWindow::onTitleChanged(const QString& title)
 
 void QBrowserWindow::closeEvent(QCloseEvent* event)
 {
-	qDebug() << "-->>" << __FUNCTION__;
 	if (webView) {
 		webView->closeBrowser(event);
 	}

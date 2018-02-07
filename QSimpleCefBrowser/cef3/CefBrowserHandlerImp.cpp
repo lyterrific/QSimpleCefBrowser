@@ -89,7 +89,16 @@ void CefBrowserHandlerImp::OnBeforeClose(CefRefPtr<CefBrowser> browser)
 
 bool CefBrowserHandlerImp::OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString& target_url, const CefString& target_frame_name, WindowOpenDisposition target_disposition, bool user_gesture, const CefPopupFeatures& popupFeatures, CefWindowInfo& windowInfo, CefRefPtr<CefClient>& client, CefBrowserSettings& settings, bool* no_javascript_access)
 {
-	qDebug() << "-->>" << QString::fromStdWString(target_url.ToWString());
+	switch (target_disposition)
+	{
+		case WOD_NEW_FOREGROUND_TAB:
+		case WOD_NEW_BACKGROUND_TAB:
+		case WOD_NEW_POPUP:
+		case WOD_NEW_WINDOW: {
+			browser->GetMainFrame()->LoadURL(target_url);
+			return true; //cancel create
+		}
+	}
 	return false;
 }
 
