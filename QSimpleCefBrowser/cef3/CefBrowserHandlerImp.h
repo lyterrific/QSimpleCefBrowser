@@ -30,6 +30,17 @@ public:
 	virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
 	virtual bool DoClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
 	virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
+	virtual bool OnBeforePopup(CefRefPtr<CefBrowser> browser,
+		CefRefPtr<CefFrame> frame,
+		const CefString& target_url,
+		const CefString& target_frame_name,
+		WindowOpenDisposition target_disposition,
+		bool user_gesture,
+		const CefPopupFeatures& popupFeatures,
+		CefWindowInfo& windowInfo,
+		CefRefPtr<CefClient>& client,
+		CefBrowserSettings& settings,
+		bool* no_javascript_access)OVERRIDE;
 
 	// CefLoadHandler methods:
 	virtual void OnLoadError(CefRefPtr<CefBrowser> browser,

@@ -98,3 +98,11 @@ void QBrowserWindow::onTitleChanged(const QString& title)
 {
 	setWindowTitle(QString(BROWSER_WINDOW_NAME) + "-" + title);
 }
+
+void QBrowserWindow::closeEvent(QCloseEvent* event)
+{
+	qDebug() << "-->>" << __FUNCTION__;
+	if (webView) {
+		webView->closeBrowser(event);
+	}
+}

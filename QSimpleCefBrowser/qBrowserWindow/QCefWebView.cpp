@@ -29,6 +29,21 @@ QCefWebView::~QCefWebView()
 {
 }
 
+void QCefWebView::closeBrowser(QCloseEvent* event)
+{
+	qDebug() << "-->>" << __FUNCTION__;
+	if (s_browserHandler && !s_browserHandler->IsClosing()) {
+		auto browser = s_browserHandler->GetBrowser();
+		if (browser.get()) {
+			browser->GetHost()->CloseBrowser(false);
+		}
+		event->ignore();
+	}
+	else {
+		event->accept();
+	}
+}
+
 void QCefWebView::loadUrl(const QString& url)
 {
 	_url = url;
@@ -87,21 +102,6 @@ void QCefWebView::onBrowserCreated()
 	}
 }
 
-void QCefWebView::SetLoading(bool isLoading)
-{
-	if (isLoading) {
-		if (!_needLoad && !_url.isEmpty()) {
-			emit loadStarted();
-		}
-		else if (_needLoad) {
-			_needLoad = false;
-		}
-		else if (!_url.isEmpty()) {
-			emit loadFinished(true);
-		}
-	}
-}
-
 void QCefWebView::resizeEvent(QResizeEvent* event)
 {
 	switch (_browserState) {
@@ -116,22 +116,6 @@ void QCefWebView::resizeEvent(QResizeEvent* event)
 	default:
 		ResizeBrowser(event->size());
 	}
-}
-
-void QCefWebView::closeEvent(QCloseEvent* event)
-{
-	if (s_browserHandler && s_browserHandler->IsClosing()) {
-		auto browser = s_browserHandler->GetBrowser();
-		if (browser.get()) {
-			browser->GetHost()->CloseBrowser(false);
-		}
-	}
-	event->accept();
-}
-
-void QCefWebView::showEvent(QShowEvent* /* event */)
-{
-	CreateBrowser(size());
 }
 
 bool QCefWebView::CreateBrowser(const QSize& size)

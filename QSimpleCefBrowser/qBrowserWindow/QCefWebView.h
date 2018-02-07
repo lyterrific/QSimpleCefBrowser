@@ -10,15 +10,17 @@ class QCefWebView :public QWidget
 	Q_OBJECT
 
 public:
-	QCefWebView(QWidget *parent = 0);
-	~QCefWebView();
-
-public:
 	enum BrowserState {
 		None,
 		Creating,
 		Created
 	};
+
+public:
+	QCefWebView(QWidget *parent = 0);
+	~QCefWebView();
+
+	void closeBrowser(QCloseEvent* event);
 
 public slots:
 	void loadUrl(const QString& url);
@@ -38,12 +40,9 @@ signals:
 
 private slots:
 	void onBrowserCreated();
-	void SetLoading(bool isLoading);
 
 protected:
 	virtual void resizeEvent(QResizeEvent* event) override;
-	virtual void closeEvent(QCloseEvent* event) override;
-	virtual void showEvent(QShowEvent* event) override;
 
 private:
 	bool CreateBrowser(const QSize & size);

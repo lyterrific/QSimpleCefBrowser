@@ -38,20 +38,23 @@ void CefBrowserHandlerImp::OnAfterCreated(CefRefPtr<CefBrowser> browser)
 		_browserId = browser->GetIdentifier();
 		emit browserCreated();
 	}
-	else if (_browser->IsPopup()) {
+	else if (browser->IsPopup()) {
 		// Add to the list of existing browsers.
 		_browserList.push_back(browser);
 	}
+
+	++_browserCount;
 }
 
 bool CefBrowserHandlerImp::DoClose(CefRefPtr<CefBrowser> browser)
 {
+	qDebug() << "-->>" << __FUNCTION__;
 	CEF_REQUIRE_UI_THREAD();
 
 	// Closing the main window requires special handling. See the DoClose()
 	// documentation in the CEF header for a detailed destription of this
 	// process.
-	if (_browserList.size() == 1) {
+	if (browser->GetIdentifier() == _browserId) {
 		// Set a flag to indicate that the window close should be allowed.
 		_isClosing = true;
 	}
@@ -63,6 +66,7 @@ bool CefBrowserHandlerImp::DoClose(CefRefPtr<CefBrowser> browser)
 
 void CefBrowserHandlerImp::OnBeforeClose(CefRefPtr<CefBrowser> browser)
 {
+	qDebug() << "-->>" << __FUNCTION__;
 	CEF_REQUIRE_UI_THREAD();
 
 	if (_browserId == browser->GetIdentifier()) {
@@ -80,9 +84,13 @@ void CefBrowserHandlerImp::OnBeforeClose(CefRefPtr<CefBrowser> browser)
 		}
 	}
 
-	if (--_browserCount == 0) {
-		// NotifyAllBrowsersClosed();
-	}
+	--_browserCount;
+}
+
+bool CefBrowserHandlerImp::OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString& target_url, const CefString& target_frame_name, WindowOpenDisposition target_disposition, bool user_gesture, const CefPopupFeatures& popupFeatures, CefWindowInfo& windowInfo, CefRefPtr<CefClient>& client, CefBrowserSettings& settings, bool* no_javascript_access)
+{
+	qDebug() << "-->>" << QString::fromStdWString(target_url.ToWString());
+	return false;
 }
 
 void CefBrowserHandlerImp::OnLoadError(CefRefPtr<CefBrowser> browser, 
@@ -122,13 +130,14 @@ void CefBrowserHandlerImp::OnGotFocus(CefRefPtr<CefBrowser> browser)
 
 void CefBrowserHandlerImp::CloseAllBrowsers(bool forceClose)
 {
+	qDebug() << "-->>" << __FUNCTION__;
 	if (!CefCurrentlyOn(TID_UI)) {
 		// Execute on the UI thread.
 		CefPostTask(TID_UI, base::Bind(&CefBrowserHandlerImp::CloseAllBrowsers, this, forceClose));
 		return;
 	}
 
-	if (_browserList.empty())
+	if (_browser == NULL)
 		return;
 
 	if (!_browserList.empty()) {

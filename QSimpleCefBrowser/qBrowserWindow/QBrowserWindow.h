@@ -24,6 +24,9 @@ private slots:
 	void onWebViewGotFocus();
 	void onTitleChanged(const QString& title);
 
+protected:
+	virtual void closeEvent(QCloseEvent* event) OVERRIDE;
+
 private:
 	QCefWebView* webView;
 
