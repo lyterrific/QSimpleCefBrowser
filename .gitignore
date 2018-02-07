@@ -36,4 +36,7 @@
 .Release/*
 /include/*
 
+*.db
+*.opendb
+*.user
 
