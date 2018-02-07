@@ -3,6 +3,7 @@ A simple example embedding cef3 to Qt Application.
 
 
 * environment: vs2015 Qt5 cef3
+* creat folders in the root directory：**include**, **Debug**, **Release**, **lib/Debug** and **lib/Release**
 * add all cef3 head files to **include** folder 
 * add libcef.lib, libcef_dll_wrapper.lib to **lib/Debug** or **lib/Release** folder
 * add all cef3 resources files and release cef3 dll files to **Debug** or **Release** folder
